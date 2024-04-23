@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'kr.entree.spigradle.base' version '2.4.3'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'dev.entree'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.papermc.io/repository/maven-public/" }
+    maven { url 'https://jitpack.io' }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+}
+
+dependencies {
+    compileOnly spigot('1.20.2')
+    compileOnly fileTree(include: '*.jar', dir: 'libs')
+    compileOnly lombok('1.18.32')
+    compileOnly protocolLib('5.1.0')
+    annotationProcessor lombok('1.18.32')
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = rootProject.group
+            artifactId = rootProject.name
+            version = rootProject.version
+            from components.java
+            pom {
+                name.set("${project.group}:${project.name}")
+                description.set("Glowing api for Bukkit.")
+                url.set("https://github.com/typst-io/bukkit-glow")
+                licenses {
+                    license {
+                        name.set("GNU Lesser General Public License v3")
+                        url.set("https://www.gnu.org/licenses/lgpl-3.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("entrypointkr")
+                        name.set("Junhyung Im")
+                        email.set("entrypointkr@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/typst-io/bukkit-glow.git")
+                    developerConnection.set("scm:git:ssh://github.com:typst-io/bukkit-glow.git")
+                    url.set("https://github.com/typst-io/bukkit-glow/tree/master")
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "sonatypeReleases"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = findProperty("ossrhUsername")?.toString()
+                password = findProperty("ossrhPassword")?.toString()
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["maven"])
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
