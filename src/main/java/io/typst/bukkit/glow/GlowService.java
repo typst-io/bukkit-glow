@@ -13,26 +13,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter(AccessLevel.PACKAGE)
-public class GlowService {
+class GlowService {
     /**
      * id of receiver player to (team player to color)
      */
-    private final Map<UUID, Map<String, PlayerGlowData>> views = new HashMap<>(); // TODO: replace this to player metadata?
+    private final Map<UUID, Map<String, PlayerGlowData>> views = new HashMap<>();
 
     public static String getTeamNameFrom(ChatColor color) {
         return "glow-" + color.getChar();
     }
 
-    public Optional<PlayerGlowData> getPlayerGlowData(String targetName, UUID receiverId, Plugin plugin) {
+    public Optional<PlayerGlowData> getPlayerGlowData(String targetName, UUID receiverId) {
         return Optional.ofNullable(views.getOrDefault(receiverId, Collections.emptyMap())
-                        .get(targetName))
-                .filter(data -> data.getPlugin().getName().equalsIgnoreCase(plugin.getName()));
+                        .get(targetName));
     }
 
-    public void setGlowing(Player target, Player receiver, ChatColor color, Plugin plugin) {
+    public void setGlowing(Player target, Player receiver, ChatColor color) {
         // update internal state
         Map<String, PlayerGlowData> view = views.computeIfAbsent(receiver.getUniqueId(), k -> new HashMap<>());
-        view.put(target.getName(), new PlayerGlowData(target.getName(), color, plugin));
+        view.put(target.getName(), new PlayerGlowData(target.getName(), color));
 
         // send metadata packet
         PacketContainer metadataPacket = GlowPackets.createGlowingMetadataPacket(target, true);
@@ -43,7 +42,7 @@ public class GlowService {
         // - create team packet
         // - add player packet - X
         List<String> teamPlayers = view.entrySet().stream()
-                .flatMap(pair -> pair.getValue().getColor().equals(color) && pair.getValue().getPlugin().equals(plugin)
+                .flatMap(pair -> pair.getValue().getColor().equals(color)
                         ? Stream.of(pair.getKey())
                         : Stream.empty())
                 .collect(Collectors.toList());
@@ -51,7 +50,7 @@ public class GlowService {
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, teamCreationPacket);
     }
 
-    public void removeGlowing(Player target, Player receiver, Plugin plugin) {
+    public void removeGlowing(Player target, Player receiver) {
         // update internal state
         Map<String, PlayerGlowData> view = views.getOrDefault(receiver.getUniqueId(), Collections.emptyMap());
         PlayerGlowData removedData = view.remove(target.getName());

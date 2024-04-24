@@ -16,21 +16,9 @@ import org.bukkit.plugin.ServicePriority;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GlowEngine {
-
-    public static void register(Plugin plugin) {
-        GlowService glowService = Bukkit.getServicesManager().load(GlowService.class);
-        if (glowService == null) {
-            GlowService newService = new GlowService();
-            Bukkit.getServicesManager().register(
-                    GlowService.class,
-                    newService,
-                    plugin,
-                    ServicePriority.Normal
-            );
-            glowService = newService;
-        }
-        GlowAPI glow = new GlowAPI(plugin);
+class GlowEngine {
+    static void register(Plugin plugin) {
+        GlowAPI glow = new GlowAPI();
         // glow info appender
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.ENTITY_METADATA) {
             @Override

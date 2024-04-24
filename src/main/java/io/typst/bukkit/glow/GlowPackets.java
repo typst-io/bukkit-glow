@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GlowPackets {
+class GlowPackets {
     public static final int CREATE_TEAM = 0;
     public static final int REMOVE_TEAM = 1;
     public static final int ADD_PLAYER = 3;
@@ -31,7 +31,7 @@ public class GlowPackets {
         }
     }
 
-    public static PacketContainer createGlowingMetadataPacket(Entity entity, boolean glow) {
+    static PacketContainer createGlowingMetadataPacket(Entity entity, boolean glow) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
         packet.getIntegers().write(0, entity.getEntityId());
         WrappedDataWatcher watcher = new WrappedDataWatcher(entity);
@@ -45,14 +45,14 @@ public class GlowPackets {
         return packet;
     }
 
-    public static PacketContainer createTeamRemovalPacket(String teamName) {
+    static PacketContainer createTeamRemovalPacket(String teamName) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SCOREBOARD_TEAM);
         packet.getStrings().write(0, teamName);
         packet.getIntegers().write(0, REMOVE_TEAM);
         return packet;
     }
 
-    public static PacketContainer createTeamCreationPacket(String teamName, ChatColor color, List<String> teamPlayerNames) {
+    static PacketContainer createTeamCreationPacket(String teamName, ChatColor color, List<String> teamPlayerNames) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SCOREBOARD_TEAM);
         packet.getStrings().write(0, teamName);
         packet.getIntegers().write(0, CREATE_TEAM);
@@ -69,7 +69,7 @@ public class GlowPackets {
         return packet;
     }
 
-    public static PacketContainer createTeamAddPlayerPacket(String teamName, List<String> addingPlayers) {
+    static PacketContainer createTeamAddPlayerPacket(String teamName, List<String> addingPlayers) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SCOREBOARD_TEAM);
         packet.getStrings().write(0, teamName);
         packet.getIntegers().write(0, ADD_PLAYER);
@@ -78,7 +78,7 @@ public class GlowPackets {
         return packet;
     }
 
-    public static PacketContainer createTeamRemovePlayerPacket(String teamName, List<String> removingPlayers) {
+    static PacketContainer createTeamRemovePlayerPacket(String teamName, List<String> removingPlayers) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SCOREBOARD_TEAM);
         packet.getStrings().write(0, teamName);
         packet.getIntegers().write(0, REMOVE_PLAYER);

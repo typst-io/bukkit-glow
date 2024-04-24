@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'kr.entree.spigradle.base' version '2.4.3'
+    id 'kr.entree.spigradle' version '2.4.3'
     id 'maven-publish'
     id 'signing'
 }
 
 group = 'io.typst'
-version = '1.0.0'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
@@ -23,6 +23,11 @@ dependencies {
     annotationProcessor lombok('1.18.32')
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+spigot {
+    name 'BukkitGlow'
+    depends 'ProtocolLib'
 }
 
 test {
