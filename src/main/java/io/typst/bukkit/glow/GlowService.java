@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -28,15 +29,15 @@ class GlowService {
                         .get(targetName));
     }
 
-    public void setGlowing(Player target, Player receiver, ChatColor color) {
+    public void setGlowing(Entity target, Player receiver, ChatColor color) {
         // update internal state
         Map<String, PlayerGlowData> view = views.computeIfAbsent(receiver.getUniqueId(), k -> new HashMap<>());
+        // TODO: this name can be replaced by entity id?
         view.put(target.getName(), new PlayerGlowData(target.getName(), color));
 
         // send metadata packet
         PacketContainer metadataPacket = GlowPackets.createGlowingMetadataPacket(target, true);
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, metadataPacket);
-
 
         // send team packet
         // - create team packet
@@ -50,7 +51,7 @@ class GlowService {
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, teamCreationPacket);
     }
 
-    public void removeGlowing(Player target, Player receiver) {
+    public void removeGlowing(Entity target, Player receiver) {
         // update internal state
         Map<String, PlayerGlowData> view = views.getOrDefault(receiver.getUniqueId(), Collections.emptyMap());
         PlayerGlowData removedData = view.remove(target.getName());

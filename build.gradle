@@ -6,13 +6,14 @@ plugins {
 }
 
 group = 'io.typst'
-version = '2.0.0'
+version = '2.1.0'
 
 repositories {
     mavenCentral()
     maven { url "https://repo.papermc.io/repository/maven-public/" }
     maven { url 'https://jitpack.io' }
     maven { url "https://repo.dmulloy2.net/repository/public/" }
+    maven { url 'https://mvn.lumine.io/repository/maven-public/' }
 }
 
 dependencies {
@@ -20,6 +21,7 @@ dependencies {
     compileOnly fileTree(include: '*.jar', dir: 'libs')
     compileOnly lombok('1.18.32')
     compileOnly protocolLib('5.1.0')
+    compileOnly 'com.ticxo.modelengine:ModelEngine:R4.0.6'
     annotationProcessor lombok('1.18.32')
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -28,6 +30,7 @@ dependencies {
 spigot {
     name 'BukkitGlow'
     depends 'ProtocolLib'
+    softDepends 'ModelEngine'
 }
 
 test {

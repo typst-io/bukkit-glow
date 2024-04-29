@@ -6,12 +6,12 @@ In gradle:
 
 groovy
 ```
-compileOnly 'io.typst:bukkit-glow:2.0.0'
+compileOnly 'io.typst:bukkit-glow:2.1.0'
 ```
 
 kts
 ```
-compileOnly("io.typst:bukkit-glow:2.0.0")
+compileOnly("io.typst:bukkit-glow:2.1.0")
 ```
 
 In plugin.yml:
@@ -29,3 +29,6 @@ GlowAPI glow = new GlowAPI(); // No cost for construction
 glow.setGlowing(receiver, target, color);
 glow.removeGlowing(receiver, target);
 ```
+
+## Support plugins
+- [ModelEngine](https://git.mythiccraft.io/mythiccraft/model-engine-4/-/wikis/Modeling)
