@@ -1,7 +1,6 @@
 package io.typst.bukkit.glow;
 
 
-import io.typst.bukkit.glow.modelengine.ModelEngineAccessor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;

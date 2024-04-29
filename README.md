@@ -6,12 +6,12 @@ In gradle:
 
 groovy
 ```
-compileOnly 'io.typst:bukkit-glow:2.1.0'
+compileOnly 'io.typst:bukkit-glow:2.1.1'
 ```
 
 kts
 ```
-compileOnly("io.typst:bukkit-glow:2.1.0")
+compileOnly("io.typst:bukkit-glow:2.1.1")
 ```
 
 In plugin.yml:
