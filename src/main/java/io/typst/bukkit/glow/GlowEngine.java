@@ -27,7 +27,10 @@ class GlowEngine {
                 PacketContainer packet = event.getPacket().shallowClone();
                 Entity target = event.getPacket().getEntityModifier(event).read(0);
                 if (target == null) return;
-                if (!glow.checkGlowing(target.getName(), receiver.getUniqueId())) return;
+                String targetName = target instanceof Player
+                        ? target.getName()
+                        : target.getUniqueId().toString();
+                if (!glow.checkGlowing(targetName, receiver.getUniqueId())) return;
                 List<WrappedDataValue> dataValues = packet.getDataValueCollectionModifier().read(0).stream()
                         .map(a ->
                                 a.getIndex() == 0
