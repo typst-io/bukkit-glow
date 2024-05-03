@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The use case
+ * The use case is, when a higher priority glow has disabled and a lower glow need to be applied
  */
 public class EntityDisglowEvent extends Event {
     private static HandlerList handlers = new HandlerList();
