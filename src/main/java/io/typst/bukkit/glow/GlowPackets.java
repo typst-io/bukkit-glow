@@ -9,12 +9,11 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class GlowPackets {
     public static final int CREATE_TEAM = 0;
@@ -31,17 +30,25 @@ class GlowPackets {
         }
     }
 
-    static PacketContainer createGlowingMetadataPacket(Entity entity, boolean glow) {
+    static PacketContainer createGlowingMetadataPacket(int entityId, boolean glow) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-        packet.getIntegers().write(0, entity.getEntityId());
-        WrappedDataWatcher watcher = new WrappedDataWatcher(entity);
-        byte headByte = watcher.hasIndex(0) ? watcher.getByte(0) : 0;
-        byte newHeadByte = modifyGlowing(headByte, glow);
+        packet.getIntegers().write(0, entityId);
+        byte newHeadByte = modifyGlowing((byte) 0, glow);
         WrappedDataWatcher.Serializer serializer = WrappedDataWatcher.Registry.get(Byte.class);
-        watcher.setObject(0, serializer, newHeadByte);
-        packet.getDataValueCollectionModifier().write(0, watcher.getWatchableObjects().stream()
-                .map(it -> new WrappedDataValue(it.getIndex(), it.getWatcherObject().getSerializer(), it.getValue()))
-                .collect(Collectors.toList()));
+        packet.getDataValueCollectionModifier().write(0, new ArrayList<>(Arrays.asList(
+                new WrappedDataValue(0, serializer, newHeadByte)
+        )));
+        return packet;
+    }
+
+    static PacketContainer createDisplayMetadataPacket(int entityId, boolean glow, ChatColor color) {
+        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+        packet.getIntegers().write(0, entityId);
+        byte newHeadByte = modifyGlowing((byte) 0, glow);
+        WrappedDataWatcher.Serializer serializer = WrappedDataWatcher.Registry.get(Byte.class);
+        packet.getDataValueCollectionModifier().write(0, new ArrayList<>(Arrays.asList(
+                new WrappedDataValue(0, serializer, newHeadByte)
+        )));
         return packet;
     }
 
