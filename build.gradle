@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'io.typst'
-version = '2.2.0'
+version = '2.3.0'
 
 repositories {
     mavenCentral()
@@ -20,7 +20,7 @@ dependencies {
     compileOnly spigot('1.20.1')
     compileOnly fileTree(include: '*.jar', dir: 'libs')
     compileOnly lombok('1.18.32')
-    compileOnly protocolLib('5.1.0')
+    compileOnly protocolLib('5.3.0')
     compileOnly 'com.ticxo.modelengine:ModelEngine:R4.0.6'
     annotationProcessor lombok('1.18.32')
     testImplementation platform('org.junit:junit-bom:5.10.0')

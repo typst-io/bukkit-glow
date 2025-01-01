@@ -2,25 +2,18 @@ package io.typst.bukkit.glow;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.InternalStructure;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.utility.MinecraftReflection;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.*;
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 class GlowPackets {
     public static final int CREATE_TEAM = 0;
     public static final int REMOVE_TEAM = 1;
     public static final int ADD_PLAYER = 3;
     public static final int REMOVE_PLAYER = 4;
-    public static final byte METADATA_GLOWING = 0b1000000;
+    public static final byte METADATA_GLOWING = 0b1000000; // 0x40
 
     public static byte modifyGlowing(byte b, boolean glow) {
         if (glow) {
@@ -61,19 +54,23 @@ class GlowPackets {
 
     static PacketContainer createTeamCreationPacket(String teamName, ChatColor color, List<String> teamPlayerNames) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SCOREBOARD_TEAM);
+        packet.getModifier().writeDefaults();
         packet.getStrings().write(0, teamName);
         packet.getIntegers().write(0, CREATE_TEAM);
         packet.getSpecificModifier(Collection.class)
                 .write(0, new ArrayList<>(teamPlayerNames));
-        packet.getModifier().writeDefaults();
-        InternalStructure teamParam = packet.getOptionalStructures().read(0).orElse(null);
-        if (teamParam != null) {
-            teamParam.getChatComponents().write(0, WrappedChatComponent.fromText(teamName));
-            teamParam.getEnumModifier(ChatColor.class, MinecraftReflection.getMinecraftClass("EnumChatFormat"))
-                    .write(0, color);
-            teamParam.getStrings().write(0, "always");
-        }
-        return packet;
+
+        WrappedTeamParameters params = WrappedTeamParameters.newBuilder()
+                .displayName(WrappedChatComponent.fromText(teamName))
+                .prefix(WrappedChatComponent.fromText(""))
+                .suffix(WrappedChatComponent.fromText(""))
+                .color(EnumWrappers.ChatFormatting.fromBukkit(color))
+                .nametagVisibility("always")
+                .collisionRule("always")
+                .build();
+        packet.getOptionalTeamParameters().write(0, Optional.of(params));
+
+         return packet;
     }
 
     static PacketContainer createTeamAddPlayerPacket(String teamName, List<String> addingPlayers) {
