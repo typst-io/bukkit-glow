@@ -32,6 +32,7 @@ class GlowService {
     }
 
     public void setGlowing(EntityId target, Player receiver, ChatColor color, String id, @Nullable Plugin plugin) {
+        String teamName = getTeamNameFrom(color);
         // update internal state
         Map<String, EntityGlowData> view = views.computeIfAbsent(receiver.getUniqueId(), k -> new HashMap<>());
         // NOTE: this name used to create team packet with player names
@@ -41,7 +42,9 @@ class GlowService {
         PacketContainer metadataPacket = GlowPackets.createGlowingMetadataPacket(target.getId(), true);
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, metadataPacket);
 
+        // [16:49:24] [Render thread/WARN]: Requested creation of existing team 'glow-f'
         // send team packet
+        // - remove team packet
         // - create team packet
         // - add player packet - X
         List<String> teamPlayers = view.entrySet().stream()
@@ -49,7 +52,9 @@ class GlowService {
                         ? Stream.of(pair.getKey())
                         : Stream.empty())
                 .collect(Collectors.toList());
-        PacketContainer teamCreationPacket = GlowPackets.createTeamCreationPacket(getTeamNameFrom(color), color, teamPlayers);
+        PacketContainer teamRemovalPacket = GlowPackets.createTeamRemovalPacket(teamName);
+        PacketContainer teamCreationPacket = GlowPackets.createTeamCreationPacket(teamName, color, teamPlayers);
+        ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, teamRemovalPacket);
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, teamCreationPacket);
     }
 
